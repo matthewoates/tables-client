@@ -10,20 +10,6 @@
         merchantId,
         employeeId;
 
-    var jsonRequest = function (type, url, data) {
-        if (csrf) {
-            url += '?_csrfToken=' + csrf;
-        }
-
-        return $.ajax({
-            type: type,
-            url: url,
-            data: JSON.stringify(data || {}),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8'
-        });
-    }
-
     function redirect() {
         location.href = config.domain +
             'oauth/authorize?response_type=token&client_id=' +
@@ -40,10 +26,34 @@
         employeeId = parts[5];
     }
 
+    function getTableData() {
+        return $.get(config.domain + 'v2/merchant/' + merchantId + '/tables?access_token=' + accessToken);
+    }
+
+    function updateTableOnServer(table) {
+        var data = {
+            cloverData: JSON.stringify(table)
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/table/' + table.id,
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        });
+    }
+
     if (!location.hash) {
         redirect();
     } else {
         // we are authenticated
         getTokens();
+
+        getTableData().then(function (data) {
+            for (var i = 0; i < data.tables.length; i++) {
+                updateTableOnServer(data.tables[i]);
+            }
+        });
     }
 }());
