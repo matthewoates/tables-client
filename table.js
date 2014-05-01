@@ -12,8 +12,6 @@ function Table(paper, data) {
             fill: 'red'
         });
 
-
-
     el.mouseover(function () {
         el.animate({'fill-opacity': 0.5}, 300);
     });

@@ -59,28 +59,12 @@ var accessToken,
 
             getTableData().then(function (data) {
                 for (var i = 0; i < data.tables.length; i++) {
-                    //updateTableOnServer(data.tables[i]);
-                    /*updateTableOnServer(data.tables[i]).then(function (data) {
-                        console.log(data);
-                    });*/
-                    new Table(paper, data.tables[i]);
+                    if (!data.tables[i].section) {
+                        new Table(paper, data.tables[i]);
+                    }
                 }
 
             });
         }
-
-        /*new Table(paper, {
-            x: 30,
-            y: 100,
-            width: 100,
-            height: 100
-        });
-
-        new Table(paper, {
-            x: 200,
-            y: 20,
-            width: 200,
-            height: 100
-        });*/
     });
 }());
