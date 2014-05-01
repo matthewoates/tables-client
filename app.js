@@ -1,3 +1,9 @@
+// global variables
+// it's a hackathon. get over it
+var accessToken,
+    merchantId,
+    employeeId;
+
 (function () {
     'use strict';
 
@@ -6,9 +12,6 @@
         domain: 'https://dev1.dev.clover.com/'
     };
 
-    var accessToken,
-        merchantId,
-        employeeId;
 
     function redirect() {
         location.href = config.domain +
@@ -35,7 +38,7 @@
             cloverData: JSON.stringify(table)
         };
 
-        $.ajax({
+        return $.ajax({
             type: 'POST',
             url: 'http://localhost:3000/table/' + table.id,
             data: JSON.stringify(data),
@@ -44,16 +47,40 @@
         });
     }
 
-    if (!location.hash) {
-        redirect();
-    } else {
-        // we are authenticated
-        getTokens();
 
-        getTableData().then(function (data) {
-            for (var i = 0; i < data.tables.length; i++) {
-                updateTableOnServer(data.tables[i]);
-            }
+    $(function () {
+        var paper = Raphael('paper', 1330, 630);
+
+        if (!location.hash) {
+            redirect();
+        } else {
+            // we are authenticated
+            getTokens();
+
+            getTableData().then(function (data) {
+                for (var i = 0; i < data.tables.length; i++) {
+                    //updateTableOnServer(data.tables[i]);
+                    /*updateTableOnServer(data.tables[i]).then(function (data) {
+                        console.log(data);
+                    });*/
+                    new Table(paper, data.tables[i]);
+                }
+
+            });
+        }
+
+        /*new Table(paper, {
+            x: 30,
+            y: 100,
+            width: 100,
+            height: 100
         });
-    }
+
+        new Table(paper, {
+            x: 200,
+            y: 20,
+            width: 200,
+            height: 100
+        });*/
+    });
 }());
