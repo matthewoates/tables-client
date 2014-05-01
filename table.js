@@ -12,6 +12,11 @@ function Table(paper, data) {
             fill: 'red'
         });
 
+    new Resizer(paper, el, this, 0);
+    new Resizer(paper, el, this, 90);
+    new Resizer(paper, el, this, 180);
+    new Resizer(paper, el, this, 270);
+
     el.mouseover(function () {
         el.animate({'fill-opacity': 0.5}, 300);
     });
@@ -22,7 +27,6 @@ function Table(paper, data) {
 
     el.drag(
         function (dx, dy) {
-            console.log(dx, dy);
             // drag update
             el.attr({
                 x: startX + dx,
@@ -63,7 +67,6 @@ function Table(paper, data) {
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
         }).done(function (data) {
-            console.log('update data:', data);
             el.attr({
                 x: data.x,
                 y: data.y,

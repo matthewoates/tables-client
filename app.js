@@ -47,7 +47,6 @@ var accessToken,
         });
     }
 
-
     $(function () {
         var paper = Raphael('paper', 1330, 630);
 
@@ -63,7 +62,6 @@ var accessToken,
                         new Table(paper, data.tables[i]);
                     }
                 }
-
             });
         }
     });
