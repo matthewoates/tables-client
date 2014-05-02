@@ -56,6 +56,21 @@ function Table(paper, data) {
 
     var firstUpdate = true;
 
+    this.refresh = function (data) {
+        $.extend(self, data);
+
+        reposition();
+    };
+
+    function reposition() {
+        el.attr({
+            x: self.x,
+            y: self.y,
+            width: self.width,
+            height: self.height
+        });
+    }
+
     this.updateServer = function () {
         $.ajax({
             type: 'POST',

@@ -2,7 +2,8 @@
 // it's a hackathon. get over it
 var accessToken,
     merchantId,
-    employeeId;
+    employeeId,
+    tables = {};
 
 (function () {
     'use strict';
@@ -59,7 +60,10 @@ var accessToken,
             getTableData().then(function (data) {
                 for (var i = 0; i < data.tables.length; i++) {
                     if (!data.tables[i].section) {
-                        new Table(paper, data.tables[i]);
+                        var table = new Table(paper, data.tables[i]);
+
+                        console.log('created table with id', table.id);
+                        tables[table.id] = table;
                     }
                 }
             });
@@ -71,6 +75,21 @@ var accessToken,
             }
         });
     });
+
+    function getTableDataFromNode() {
+        return $.get('http://localhost:3000/tables');
+    };
+
+    setInterval(function () {
+        console.log('poll');
+        getTableDataFromNode().then(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                if (!data[i].section) {
+                    tables[data[i].id].refresh(data[i]);
+                }
+            }
+        });
+    }, 10000);
 }());
 
 var selectedTable;
