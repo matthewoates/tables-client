@@ -23,7 +23,10 @@ function Table(paper, data) {
                 fill: 'red'
         });
 
+        registerListeners();
+    }
 
+    function registerListeners() {
         el.mouseover(function () {
             el.animate({'fill-opacity': 0.5}, 300);
         });
@@ -40,20 +43,37 @@ function Table(paper, data) {
         el.drag(
             function (dx, dy) {
                 // drag update
-                el.attr({
-                    x: startX + dx,
-                    y: startY + dy
-                });
+                if (self.isRect) {
+                    el.attr({
+                        x: startX + dx,
+                        y: startY + dy
+                    });
+                } else {
+                    el.attr({
+                        cx: startX + dx,
+                        cy: startY + dy
+                    });
+                }
             },
             function () {
                 // drag start
-                startX = el.attr('x');
-                startY = el.attr('y');
+                if (self.isRect) {
+                    startX = el.attr('x');
+                    startY = el.attr('y');
+                } else {
+                    startX = el.attr('cx');
+                    startY = el.attr('cy');
+                }
             },
             function () {
                 // drag stop
-                self.x = el.attr('x');
-                self.y = el.attr('y');
+                if (self.isRect) {
+                    self.x = el.attr('x');
+                    self.y = el.attr('y');
+                } else {
+                    self.x = el.attr('cx') - el.attr('rx');
+                    self.y = el.attr('cy') - el.attr('ry');
+                }
 
                 self.updateServer();
             }
@@ -61,9 +81,48 @@ function Table(paper, data) {
     }
 
     this.setIsRect = function (isRect) {
+        var toX = (this.isRect ? this.width / 2 : 0) + this.x,
+            toY = (this.isRect ? this.height / 2 : 0) + this.y;
+
         this.isRect = isRect;
 
+        el.animate({
+            x: toX,
+            y: toY,
+            width: 0,
+            height: 0,
+            rx: 0,
+            ry: 0,
+            opacity: 0
+        }, 500);
+
+        var destX = this.x,
+            destY = this.y;
+
+        if (isRect) {
+            el = paper.rect(this.x + this.width / 2, this.y + this.height / 2, 0, 0, 5);
+        } else {
+            el = paper.ellipse(this.x + this.width / 2, this.y + this.width / 2, 0, 0);
+            destX += this.width / 2;
+            destY += this.height / 2;
+        }
+
+        el.attr({
+                fill: 'red'
+        });
+
+        el.animate({
+            x: destX,
+            y: destY,
+            width: this.width,
+            rx: this.width / 2,
+            height: this.height,
+            ry: this.height / 2
+        }, 2000, 'elastic');
+
+
         this.updateServer();
+        registerListeners();
     }
 
     var firstUpdate = true;
