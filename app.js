@@ -64,5 +64,22 @@ var accessToken,
                 }
             });
         }
+
+        $('.table-is-rect').click(function () {
+            if (selectedTable) {
+                selectedTable.setIsRect(this.checked);
+            }
+        });
     });
 }());
+
+var selectedTable;
+
+function selectTable(table) {
+    selectedTable = table;
+
+    var json = JSON.parse(table.cloverData || '{}');
+
+    $('.table-name').text(json.name);
+    $('.table-is-rect').attr('checked', table.isRect);
+}

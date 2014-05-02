@@ -25,6 +25,11 @@ function Table(paper, data) {
         el.animate({'fill-opacity': 1}, 300);
     });
 
+    el.click(function () {
+        console.log(self.cloverData);
+        selectTable(self);
+    });
+
     el.drag(
         function (dx, dy) {
             // drag update
@@ -47,14 +52,17 @@ function Table(paper, data) {
         }
     );
 
+    this.setIsRect = function (isRect) {
+        this.isRect = isRect;
+
+        this.updateServer();
+    }
+
     this.updateServer = function () {
         $.ajax({
             type: 'POST',
             url: 'http://localhost:3000/table/' + this.id,
             data: JSON.stringify({
-                /*cloverData: JSON.stringify({
-                    id: this.id
-                }),*/
                 cloverData: this.cloverData,
                 id: this.id,
                 x: this.x,
