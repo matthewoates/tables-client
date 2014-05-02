@@ -7,46 +7,58 @@ function Table(paper, data) {
 
     this.cloverData = JSON.stringify(data);
 
-    var el = paper.rect(this.x, this.y, this.width, this.height, 5)
-        .attr({
-            fill: 'red'
+    var el;
+
+    this.init = function () {
+        console.log('init()');
+
+        if (this.isRect) {
+            el = paper.rect(this.x, this.y, this.width, this.height, 5)
+        } else {
+            el = paper.ellipse(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, this.height / 2);
+            //console.log(this.x, this.y, this.width, this.height);
+        }
+
+        el.attr({
+                fill: 'red'
         });
 
 
-    el.mouseover(function () {
-        el.animate({'fill-opacity': 0.5}, 300);
-    });
+        el.mouseover(function () {
+            el.animate({'fill-opacity': 0.5}, 300);
+        });
 
-    el.mouseout(function () {
-        el.animate({'fill-opacity': 1}, 300);
-    });
+        el.mouseout(function () {
+            el.animate({'fill-opacity': 1}, 300);
+        });
 
-    el.click(function () {
-        console.log(self.cloverData);
-        selectTable(self);
-    });
+        el.click(function () {
+            console.log(self.cloverData);
+            selectTable(self);
+        });
 
-    el.drag(
-        function (dx, dy) {
-            // drag update
-            el.attr({
-                x: startX + dx,
-                y: startY + dy
-            });
-        },
-        function () {
-            // drag start
-            startX = el.attr('x');
-            startY = el.attr('y');
-        },
-        function () {
-            // drag stop
-            self.x = el.attr('x');
-            self.y = el.attr('y');
+        el.drag(
+            function (dx, dy) {
+                // drag update
+                el.attr({
+                    x: startX + dx,
+                    y: startY + dy
+                });
+            },
+            function () {
+                // drag start
+                startX = el.attr('x');
+                startY = el.attr('y');
+            },
+            function () {
+                // drag stop
+                self.x = el.attr('x');
+                self.y = el.attr('y');
 
-            self.updateServer();
-        }
-    );
+                self.updateServer();
+            }
+        );
+    }
 
     this.setIsRect = function (isRect) {
         this.isRect = isRect;
@@ -88,6 +100,12 @@ function Table(paper, data) {
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
         }).done(function (data) {
+            $.extend(self, data);
+
+            if (firstUpdate) {
+                self.init();
+            }
+
             el.attr({
                 x: data.x,
                 y: data.y,
