@@ -1,5 +1,5 @@
 function Resizer(paper, parent, table, direction) {
-    var el = paper.circle(100, 100, 6);
+    var el = paper.circle(-50, -50, 6);
 
     var parentStartX,
         parentStartY,
@@ -32,7 +32,7 @@ function Resizer(paper, parent, table, direction) {
 
     el.attr({
         fill: 'yellow',
-        'fill-opacity': 0,
+        'fill-opacity': 0.1,
         'stroke-width': 0
     });
 
@@ -44,7 +44,7 @@ function Resizer(paper, parent, table, direction) {
 
     el.mouseout(function () {
         el.animate({
-            'fill-opacity': 0
+            'fill-opacity': 0.1
         }, 200);
     });
 
@@ -84,19 +84,7 @@ function Resizer(paper, parent, table, direction) {
         }
     );
 
-    /*parent.mouseover(function () {
-        reposition();
-
-        el.animate({
-            'fill-opacity': 0.4
-        }, 500);
-    });*/
-
     parent.drag(reposition);
 
-    /*parent.mouseout(function () {
-        el.animate({
-            'fill-opacity': 0
-        }, 500);
-    });*/
+    reposition();
 }

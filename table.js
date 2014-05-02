@@ -12,10 +12,6 @@ function Table(paper, data) {
             fill: 'red'
         });
 
-    new Resizer(paper, el, this, 0);
-    new Resizer(paper, el, this, 90);
-    new Resizer(paper, el, this, 180);
-    new Resizer(paper, el, this, 270);
 
     el.mouseover(function () {
         el.animate({'fill-opacity': 0.5}, 300);
@@ -58,6 +54,8 @@ function Table(paper, data) {
         this.updateServer();
     }
 
+    var firstUpdate = true;
+
     this.updateServer = function () {
         $.ajax({
             type: 'POST',
@@ -81,6 +79,14 @@ function Table(paper, data) {
                 width: data.width,
                 height: data.height
             });
+
+            if (firstUpdate) {
+                firstUpdate = false;
+                new Resizer(paper, el, self, 0);
+                new Resizer(paper, el, self, 90);
+                new Resizer(paper, el, self, 180);
+                new Resizer(paper, el, self, 270);
+            }
         });
     }
 
